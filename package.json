@@ -1,0 +1,36 @@
+{
+  "name": "t-res-api",
+  "version": "1.0.0",
+  "description": "api for t-res, an app for my abp project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shidqify/Tubes-ABP.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shidqify/Tubes-ABP/issues"
+  },
+  "homepage": "https://github.com/shidqify/Tubes-ABP#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "confidence": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "joi": "^17.9.1",
+    "jsonwebtoken": "^9.0.0",
+    "md5": "^2.3.0",
+    "mongodb": "^5.2.0",
+    "redis": "^4.6.5",
+    "validate": "^5.2.0",
+    "validate.js": "^0.13.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
