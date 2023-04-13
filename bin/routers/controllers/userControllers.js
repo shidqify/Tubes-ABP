@@ -16,7 +16,7 @@ module.exports.login = async (req, res) => {
 }
 
 module.exports.register = async (req, res) => {
-    let { username, password, name, org} = req.body;
+    let { username, password, fullname, org} = req.body;
 
     userService.register(username, password, fullname, org)
         .then(resp => {

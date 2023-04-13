@@ -9,6 +9,7 @@ function AppServer() {
     this.server = express();
 
     this.server.use(bodyParser.json());
+    this.server.use(bodyParser.urlencoded({ extended: false }));
 
     this.server.use(cors());
 

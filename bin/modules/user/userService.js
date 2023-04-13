@@ -13,7 +13,8 @@ module.exports.login = async (username, password) => {
         password : md5(password)
     });
     if (recordSet.err) {
-        return wrapper.error(new NotFoundError('Can not find User'));
+        // return wrapper.error(new NotFoundError('Can not find User'));
+        throw new NotFoundError('Can not find user');
     }
     return recordSet;
 }
@@ -21,8 +22,9 @@ module.exports.login = async (username, password) => {
 module.exports.register = async (username, password, fullname, org) => {
     mongoDb.setCollection('user');
     const recordSet = await mongoDb.findOne({ username });
-    if (!validate.isEmpty(recordSet)) {
-        return wrapper.error(new ConflictError('Username already exist'));
+    if (!validate.isEmpty(recordSet.data)) {
+        console.log('Username already exist');
+        throw new ConflictError('Username already exist');
     }
     return mongoDb.insertOne({ 
         username,
