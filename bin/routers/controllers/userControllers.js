@@ -1,3 +1,4 @@
+const { async } = require('validate.js');
 const response = require('../../helpers/utils/wrapper');
 const userService = require('../../modules/user/userService');
 
@@ -26,5 +27,19 @@ module.exports.register = async (req, res) => {
         .catch(err => {
             console.log('User cannot be created', err);
             response.response(res, 'fail', response.error(err), `Error while creating user. Error: ${err}`, 400);
+        });
+}
+
+module.exports.viewUser = async (req, res) => {
+    const userData = req.userData;
+
+    userService.viewUser(userData)
+        .then(resp => {
+            console.log('User has found');
+            response.response(res, 'success', response.data(resp), 'User has found', 200);
         })
+        .catch(err => {
+            console.log('User not found');
+            response.response(res, 'fail', response.error(err), `Error while finding user. Error: ${err}`, 404);
+        });
 }
