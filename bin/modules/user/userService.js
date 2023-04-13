@@ -22,7 +22,7 @@ module.exports.login = async (username, password) => {
         // return wrapper.error(new NotFoundError('Can not find User'));
         throw new NotFoundError('Wrong Username / Password');
     }
-    const userData = recordSet.data;
+    const userData = {...recordSet.data, password: '***'};
     const result = {
         userData,
         token : await generateToken(recordSet._id)
@@ -37,10 +37,13 @@ module.exports.register = async (username, password, fullname, org) => {
         console.log('Username already exist');
         throw new ConflictError('Username already exist');
     }
-    return mongoDb.insertOne({ 
+    const result = await mongoDb.insertOne({ 
         username,
         password : md5(password),
         fullname,
         org
     });
+
+    const maskedResult = {...result.data, password: '***'};
+    return wrapper.data(maskedResult);
 }
