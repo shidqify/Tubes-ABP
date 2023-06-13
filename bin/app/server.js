@@ -3,11 +3,15 @@ const wrapper = require('../helpers/utils/wrapper');
 const bodyParser = require('body-parser');
 const mongoConnectionPooling = require('../helpers/databases/mongodb/connection');
 const express = require('express');
+const userRoutes = require('../routers/userRoutes');
+const placeRoutes = require('../routers/placeRoutes');
+const scheduleRoutes = require('../routers/scheduleRoutes');
 
 function AppServer() {
     this.server = express();
 
     this.server.use(bodyParser.json());
+    this.server.use(bodyParser.urlencoded({ extended: false }));
 
     this.server.use(cors());
 
@@ -16,6 +20,9 @@ function AppServer() {
     });
 
     //Routing
+    this.server.use('/user', userRoutes);
+    this.server.use('/place', placeRoutes);
+    this.server.use('/schedule', scheduleRoutes);
 
     // exception handling
     this.server.use((error, req, res, next) => {

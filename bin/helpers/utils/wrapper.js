@@ -1,3 +1,7 @@
+const {
+    NotFoundError, InternalServerError, BadRequestError, ConflictError, ConditionNotMetError, PreconditionFailedError,
+    ForbiddenError, MethodNotAllowedError, UnauthorizedError
+} = require('../error');
 const data = d => ({err: null, data: d});
 
 const paginationData = (d, meta) => ({err: null, data: d, meta});
@@ -48,3 +52,10 @@ const response = (res, type, result, message = '', statusCode = 200, code = stat
     res.outputResponse = json;
     res.status(statusCode).send(json);
 };
+
+module.exports = {
+    data,
+    paginationData,
+    error,
+    response
+}

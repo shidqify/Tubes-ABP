@@ -78,6 +78,7 @@ const getConnection = async (config) => {
             return res;
         }
         const connection = await isConnected(res.data);
+        console.log(connection);
         connectionIndex = res.data.index;
         return connection;
 

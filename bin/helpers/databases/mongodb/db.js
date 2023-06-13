@@ -1,11 +1,13 @@
 const validate = require('validate.js');
 const mongoConnection = require('./connection');
 const wrapper = require('../../utils/wrapper');
+const { MongoClient } = require('mongodb');
 
 class DB {
 
     constructor(config) {
         this.config = config;
+        this.client = new MongoClient(this.config);
     }
 
     setCollection(collectionName) {
@@ -23,14 +25,12 @@ class DB {
     async findOne(parameter) {
         const ctx = 'mongodb-findOne';
         const dbName = await this.getDatabase();
-        const result = await mongoConnection.getConnection(this.config);
-        if (result.err) {
-            console.log('Error mongodb connection', result.err.message);
-            return result;
-        }
+        // const result = await mongoConnection.getConnection(this.config);
+        await this.client.connect();
         try {
-            const cacheConnection = result.data.db;
-            const connection = cacheConnection.db(dbName);
+            // console.log("halo", result.data.db);
+            // const cacheConnection = result.data.db;
+            const connection = this.client.db(dbName);
             const db = connection.collection(this.collectionName);
             const recordset = await db.findOne(parameter);
             if (validate.isEmpty(recordset)) {
@@ -48,14 +48,11 @@ class DB {
     async findMany(parameter) {
         const ctx = 'mongodb-findMany';
         const dbName = await this.getDatabase();
-        const result = await mongoConnection.getConnection(this.config);
-        if (result.err) {
-            console.log(result.err.message, 'Error mongodb connection')
-            return result;
-        }
+        // const result = await mongoConnection.getConnection(this.config);
+        await this.client.connect();
         try {
-            const cacheConnection = result.data.db;
-            const connection = cacheConnection.db(dbName);
+            // const cacheConnection = result.data.db;
+            const connection = this.client.db(dbName);
             const db = connection.collection(this.collectionName);
             const recordset = await db.find(parameter).toArray();
             if (validate.isEmpty(recordset)) {
@@ -73,17 +70,14 @@ class DB {
     async insertOne(document) {
         const ctx = 'mongodb-insertOne';
         const dbName = await this.getDatabase();
-        const result = await mongoConnection.getConnection(this.config);
-        if (result.err) {
-            console.log(result.err.message, 'Error mongodb connection')
-            return result;
-        }
+        // const result = await mongoConnection.getConnection(this.config);
+        await this.client.connect();
         try {
-            const cacheConnection = result.data.db;
-            const connection = cacheConnection.db(dbName);
+            // const cacheConnection = result.data.db;
+            const connection = this.client.db(dbName);
             const db = connection.collection(this.collectionName);
             const recordset = await db.insertOne(document);
-            if (recordset.result.n !== 1) {
+            if (recordset.acknowledged !== true) {
                 return wrapper.error('Failed Inserting Data to Database');
             }
             return wrapper.data(document);
@@ -99,17 +93,14 @@ class DB {
         const ctx = 'mongodb-insertMany';
         const document = data;
         const dbName = await this.getDatabase();
-        const result = await mongoConnection.getConnection(this.config);
-        if (result.err) {
-            console.log(result.err.message, 'Error mongodb connection')
-            return result;
-        }
+        // const result = await mongoConnection.getConnection(this.config);
+        await this.client.connect();
         try {
-            const cacheConnection = result.data.db;
-            const connection = cacheConnection.db(dbName);
+            // const cacheConnection = result.data.db;
+            const connection = this.client.db(dbName);
             const db = connection.collection(this.collectionName);
             const recordset = await db.insertMany(document);
-            if (recordset.result.n < 1) {
+            if (recordset.acknowledged !== true) {
                 return wrapper.error('Failed Inserting Data to Database');
             }
             return wrapper.data(document);
@@ -126,14 +117,11 @@ class DB {
     async upsertOne(parameter, updateQuery) {
         const ctx = 'mongodb-upsertOne';
         const dbName = await this.getDatabase();
-        const result = await mongoConnection.getConnection(this.config);
-        if (result.err) {
-            console.log(result.err.message, 'Error mongodb connection')
-            return result;
-        }
+        // const result = await mongoConnection.getConnection(this.config);
+        await this.client.connect();
         try {
-            const cacheConnection = result.data.db;
-            const connection = cacheConnection.db(dbName);
+            // const cacheConnection = result.data.db;
+            const connection = this.client.db(dbName);
             const db = connection.collection(this.collectionName);
             const data = await db.update(parameter, updateQuery, { upsert: true });
             if (data.result.nModified >= 0) {
@@ -156,19 +144,17 @@ class DB {
     async findAllData(fieldName, row, page, param) {
         const ctx = 'mongodb-findAllData';
         const dbName = await this.getDatabase();
-        const result = await mongoConnection.getConnection(this.config);
-        if (result.err) {
-            console.log(result.err.message, 'Error mongodb connection')
-            return result;
-        }
+        // const result = await mongoConnection.getConnection(this.config);
+        await this.client.connect();
         try {
-            const cacheConnection = result.data.db;
-            const connection = cacheConnection.db(dbName);
+            // const cacheConnection = result.data.db;
+            const connection = this.client.db(dbName);
             const db = connection.collection(this.collectionName);
             const parameterSort = {};
             parameterSort[fieldName] = 1;
             const parameterPage = row * (page - 1);
-            const recordset = await db.find(param).sort(parameterSort).limit(row).skip(parameterPage)
+            // const recordset = await db.find(param).sort(parameterSort).limit(row).skip(parameterPage)
+            const recordset = await db.find(param)
                 .toArray();
             if (validate.isEmpty(recordset)) {
                 return wrapper.error('Data Not Found, Please Try Another Input');
@@ -186,16 +172,13 @@ class DB {
     async countData(param) {
         const ctx = 'mongodb-countData';
         const dbName = await this.getDatabase();
-        const result = await mongoConnection.getConnection(this.config);
-        if (result.err) {
-            console.log(result.err.message, 'Error mongodb connection')
-            return result;
-        }
+        // const result = await mongoConnection.getConnection(this.config);
+        await this.client.connect();
         try {
-            const cacheConnection = result.data.db;
-            const connection = cacheConnection.db(dbName);
+            // const cacheConnection = result.data.db;
+            const connection = this.client.db(dbName);
             const db = connection.collection(this.collectionName);
-            const recordset = await db.count(param);
+            const recordset = await db.countDocuments(param);
             if (validate.isEmpty(recordset)) {
                 return wrapper.error('Data Not Found , Please Try Another Input');
             }
