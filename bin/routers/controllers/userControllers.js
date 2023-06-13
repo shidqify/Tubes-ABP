@@ -1,5 +1,4 @@
-const { async } = require('validate.js');
-const response = require('../../helpers/utils/wrapper');
+const wrapper = require('../../helpers/utils/wrapper');
 const userService = require('../../modules/user/userService');
 
 module.exports.login = async (req, res) => {
@@ -8,11 +7,11 @@ module.exports.login = async (req, res) => {
     userService.login(username, password)
         .then(resp => {
             console.log('User has logged in');
-            response.response(res, 'success', response.data(resp), 'User has logged in', 201);
+            wrapper.response(res, 'success', wrapper.data(resp), 'User has logged in', 201);
         })
         .catch(err => {
             console.log('Error while logging in', err);
-            response.response(res, 'fail', response.error(err), `Error while logging in. Error: ${err}`, 401, 401);
+            wrapper.response(res, 'fail', wrapper.error(err), `Error while logging in. Error: ${err}`, 401, 401);
         });
 }
 
@@ -22,11 +21,11 @@ module.exports.register = async (req, res) => {
     userService.register(username, password, fullname, org)
         .then(resp => {
             console.log('User has been created');
-            response.response(res, 'success', response.data(resp), 'User has been created', 201);
+            wrapper.response(res, 'success', wrapper.data(resp), 'User has been created', 201);
         })
         .catch(err => {
             console.log('User cannot be created', err);
-            response.response(res, 'fail', response.error(err), `Error while creating user. Error: ${err}`, 400);
+            wrapper.response(res, 'fail', wrapper.error(err), `Error while creating user. Error: ${err}`, 400);
         });
 }
 
@@ -36,10 +35,10 @@ module.exports.viewUser = async (req, res) => {
     userService.viewUser(userData)
         .then(resp => {
             console.log('User has found');
-            response.response(res, 'success', response.data(resp), 'User has found', 200);
+            wrapper.response(res, 'success', wrapper.data(resp), 'User has found', 200);
         })
         .catch(err => {
             console.log('User not found');
-            response.response(res, 'fail', response.error(err), `Error while finding user. Error: ${err}`, 404);
+            wrapper.response(res, 'fail', wrapper.error(err), `Error while finding user. Error: ${err}`, 404);
         });
 }
