@@ -33,11 +33,12 @@ module.exports.getOneSchedule = async (req, res) => {
 }
 
 module.exports.checkAvailability = async (req, res) => {
+    let namaTempat = req.body.namaTempat;
     let tanggal = req.body.tanggal;
     let waktuAwal = req.body.waktuAwal;
     let waktuAkhir = req.body.waktuAkhir;
 
-    scheduleService.checkAvailability(tanggal, waktuAwal, waktuAkhir)
+    scheduleService.checkAvailability(namaTempat, tanggal, waktuAwal, waktuAkhir)
         .then(resp => {
             console.log('Schedule available');
             wrapper.response(res, 'success', resp, 'Schedule available', 200);

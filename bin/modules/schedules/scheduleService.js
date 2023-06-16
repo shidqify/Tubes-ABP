@@ -44,11 +44,12 @@ module.exports.getOneSchedule = async (id) => {
     }
 }
 
-module.exports.checkAvailability = async (tanggal, waktuAwal, waktuAkhir) => {
+module.exports.checkAvailability = async (namaTempat, tanggal, waktuAwal, waktuAkhir) => {
     try {
         mongoDb.setCollection('jadwal');
         const overlappingSchedule = await mongoDb.findMany({
             $and: [
+                {namaTempat : namaTempat },
                 { tanggal: tanggal },
                 {
                   $or: [
@@ -79,6 +80,7 @@ module.exports.checkAvailability = async (tanggal, waktuAwal, waktuAkhir) => {
             console.log('Schedule is not available');
             throw new NotFoundError('Schedule is not avaliable');
         }
+        console.log(overlappingSchedule)
         console.log('Schedule is available');
         return wrapper.data({avaliable: true});
     } catch (error) {
